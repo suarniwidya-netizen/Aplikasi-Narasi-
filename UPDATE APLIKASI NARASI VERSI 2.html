@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NARASI Pro — Aplikasi Pembelajaran Terpadu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue: #2563eb;
+  --blue-dark: #1e3a8a;
+  --blue-light: #eff6ff;
+  --emerald: #10b981;
+  --emerald-light: #ecfdf5;
+  --amber: #f59e0b;
+  --amber-light: #fffbeb;
+  --rose: #f43f5e;
+  --rose-light: #fff1f2;
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748b;
+  --slate-300: #cbd5e1;
+  --slate-100: #f1f5f9;
+  --white: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --shadow-lg: 0 20px 30px -10px rgba(15, 23, 42, 0.12), 0 10px 15px -5px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --bg-app: #0d1527;
+  --text-main: #1e293b;
+  --top-bg: rgba(15, 23, 42, 0.75);
+  --side-bg: rgba(15, 23, 42, 0.6);
+}
+
+[data-theme="light"] {
+  --bg-app: #f8fafc;
+  --text-main: #0f172a;
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(203, 213, 225, 0.8);
+  --top-bg: rgba(255, 255, 255, 0.9);
+  --side-bg: rgba(241, 245, 249, 0.9);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: var(--text-main); background-color: var(--bg-app);
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(37, 99, 235, 0.22) 0px, transparent 50%),
+    radial-gradient(at 90% 15%, rgba(16, 185, 129, 0.18) 0px, transparent 50%),
+    radial-gradient(at 50% 85%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(30, 58, 138, 0.3) 0px, transparent 50%),
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;
+  background-attachment: fixed;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+button, input, select, textarea { font-family: inherit; }
+button { cursor: pointer; transition: all 0.2s ease; }
+.hidden { display: none !important; }
+.muted { color: var(--slate-500); }
+.small { font-size: 12px; }
+
+.app { min-height: 100vh; display: flex; flex-direction: column; }
+.top {
+  height: 72px; background: var(--top-bg);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; position: sticky; top: 0; z-index: 50;
+}
+.brand-mini { font-weight: 900; font-size: 24px; letter-spacing: 1px; color: #ffffff; }
+[data-theme="light"] .brand-mini { color: var(--slate-900); }
+.brand-mini span { color: var(--amber); }
+
+.user { display: flex; gap: 12px; align-items: center; font-weight: 700; color: #ffffff; }
+[data-theme="light"] .user { color: var(--slate-900); }
+
+.avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--emerald));
+  color: #fff; display: grid; place-items: center; font-weight: 800;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+  object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 72px); }
+.side {
+  background: var(--side-bg); backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08); padding: 24px 16px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.side h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255, 255, 255, 0.4); margin: 12px 12px 6px; }
+[data-theme="light"] .side h4 { color: var(--slate-500); }
+
+.nav {
+  width: 100%; text-align: left; border: 0; background: transparent; padding: 12px 16px;
+  border-radius: var(--radius-sm); color: rgba(255, 255, 255, 0.75);
+  font-weight: 600; font-size: 13.5px; display: flex; align-items: center; gap: 10px;
+}
+[data-theme="light"] .nav { color: var(--slate-700); }
+.nav.active, .nav:hover {
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.3), rgba(37, 99, 235, 0.08));
+  color: #ffffff; border-left: 4px solid var(--blue); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+[data-theme="light"] .nav.active, [data-theme="light"] .nav:hover { color: var(--blue); }
+
+.main { padding: 32px; max-width: 1500px; width: 100%; margin: 0 auto; }
+
+.card, .section {
+  background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 24px;
+  box-shadow: var(--shadow-lg); margin-bottom: 20px;
+}
+
+.page-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.page-head h2 { margin: 0; font-size: 24px; font-weight: 800; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+[data-theme="light"] .page-head h2 { color: var(--slate-900); text-shadow: none; }
+
+.btn, .action {
+  border: 0; border-radius: 99px; padding: 10px 20px; font-weight: 700; font-size: 13px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.btn-primary, .action { background: linear-gradient(135deg, var(--blue), var(--blue-dark)); color: #fff; }
+.btn-primary:hover, .action:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35); }
+.btn-secondary { background: rgba(255, 255, 255, 0.85); color: var(--slate-800); }
+.btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+.btn-success { background: linear-gradient(135deg, var(--emerald), #059669); color: #fff; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.stat { font-size: 32px; font-weight: 900; color: var(--slate-900); margin: 6px 0; }
+.stat-label { font-size: 12px; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px; }
+
+.badge {
+  display: inline-flex; padding: 5px 12px; border-radius: 30px; font-size: 11px; font-weight: 800;
+  background: var(--emerald-light); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.badge.warn { background: var(--amber-light); color: var(--amber); border-color: rgba(245, 158, 11, 0.2); }
+.badge.red { background: var(--rose-light); color: var(--rose); border-color: rgba(244, 63, 94, 0.2); }
+
+.narasi-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 20px 0; }
+.flow-card {
+  background: rgba(255, 255, 255, 0.95); border-radius: var(--radius-md); padding: 16px;
+  border: 2px solid transparent; transition: all 0.25s ease; cursor: pointer; text-align: left;
+}
+.flow-card:hover, .flow-card.active {
+  border-color: var(--blue); transform: translateY(-4px); box-shadow: 0 12px 20px rgba(37, 99, 235, 0.15);
+}
+.flow-card .letter { font-size: 22px; font-weight: 900; color: var(--blue); }
+.flow-card .title { font-size: 13px; font-weight: 800; color: var(--slate-800); margin-top: 4px; }
+.flow-card .desc { font-size: 11px; color: var(--slate-500); margin-top: 2px; }
+
+.student-filter {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
+  border-radius: var(--radius-md); padding: 14px 20px; margin-bottom: 20px; border: 1px solid var(--glass-border);
+}
+.student-filter select, .student-filter input { padding: 10px 14px; border: 1px solid var(--slate-300); border-radius: var(--radius-sm); outline: none; }
+
+.chart-container { display: flex; gap: 20px; align-items: flex-end; height: 210px; padding: 20px 10px 10px; border-bottom: 2px solid var(--slate-300); }
+.chart-group { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px; }
+.chart-bars { display: flex; gap: 6px; align-items: flex-end; height: 100%; width: 100%; justify-content: center; }
+.chart-bar { width: 28px; border-radius: 6px 6px 0 0; transition: height 0.5s ease; position: relative; display: flex; justify-content: center; align-items: flex-start; }
+.chart-bar-val { font-size: 10px; font-weight: 800; color: #fff; margin-top: 4px; }
+.chart-bar.initial { background: linear-gradient(180deg, var(--blue), var(--blue-dark)); }
+.chart-bar.reassessment { background: linear-gradient(180deg, var(--emerald), #059669); }
+.chart-label { font-size: 12px; font-weight: 700; color: var(--slate-700); text-align: center; }
+
+.table-wrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.table th { background: rgba(241, 245, 249, 0.8); color: var(--slate-600); font-size: 12px; font-weight: 700; padding: 14px; text-align: left; }
+.table td { padding: 14px; border-bottom: 1px solid var(--slate-100); font-size: 13px; background: rgba(255,255,255,0.6); }
+.table tr:hover td { background: rgba(239, 246, 255, 0.8); }
+
+.empty-state { text-align: center; padding: 40px 20px; color: var(--slate-500); }
+.empty-state .icon { font-size: 40px; margin-bottom: 8px; }
+
+.portal-chooser { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.portal-card {
+  background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(24px); border-radius: 28px; padding: 40px;
+  max-width: 520px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+.portal-logo { font-size: 36px; font-weight: 900; letter-spacing: 3px; color: var(--slate-900); }
+.portal-logo span { color: var(--amber); }
+.portal-options { display: grid; gap: 16px; margin-top: 24px; }
+.portal-option {
+  display: flex; align-items: center; gap: 16px; padding: 20px; border: 2px solid var(--slate-100);
+  border-radius: var(--radius-md); background: #ffffff; text-align: left; transition: all 0.25s ease;
+}
+.portal-option:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.1); }
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px;
+}
+.modal { width: min(760px, 95vw); background: #ffffff; border-radius: var(--radius-lg); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; }
+.modal-head { padding: 20px 24px; border-bottom: 1px solid var(--slate-100); display: flex; justify-content: space-between; align-items: center; }
+.modal-body { padding: 24px; max-height: 75vh; overflow-y: auto; }
+.modal-foot { padding: 16px 24px; background: var(--slate-100); display: flex; justify-content: flex-end; gap: 12px; }
+
+.toast {
+  position: fixed; right: 24px; bottom: 24px; background: var(--slate-900); color: #fff;
+  padding: 14px 24px; border-radius: var(--radius-md); font-weight: 700; z-index: 10000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); display: none; border-left: 5px solid var(--emerald);
+}
+.toast.success { background: var(--slate-900); border-left-color: var(--emerald); }
+.toast.warn { background: var(--slate-900); border-left-color: var(--amber); }
+.toast.error { background: var(--slate-900); border-left-color: var(--rose); }
+.toast.show { display: block; animation: slideUp 0.3s ease; }
+
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+@media print {
+  body { background: #ffffff !important; color: #000000 !important; }
+  .top, .side, .student-filter, .btn, .portal-chooser, #toast { display: none !important; }
+  .layout { display: block !important; }
+  .main { padding: 0 !important; max-width: 100% !important; }
+  .section, .card { background: #ffffff !important; border: 1px solid #ddd !important; box-shadow: none !important; backdrop-filter: none !important; color: #000 !important; }
+  .page-head h2 { color: #000000 !important; text-shadow: none !important; }
+  .table th { background: #f1f5f9 !important; color: #000000 !important; }
+  .table td { background: #ffffff !important; color: #000000 !important; }
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .side { display: flex; flex-direction: row; overflow-x: auto; position: sticky; top: 72px; z-index: 40; padding: 12px; }
+  .side h4 { display: none; }
+  .nav { min-width: max-content; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<div id="portalChooser" class="portal-chooser">
+  <div class="portal-card">
+    <div class="portal-logo">N<span>A</span>RASI</div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--slate-500);margin-top:4px">SISTEM PEMBELAJARAN TERPADU PRO</div>
+    <div style="background:var(--blue-light);color:var(--blue);border-radius:12px;padding:12px;font-size:12.5px;font-weight:700;margin:18px 0 24px">
+      <b>N</b>ilai • <b>A</b>nalisis • <b>R</b>encana • <b>A</b>ksi • <b>S</b>trategi • <b>I</b>ntervensi
+    </div>
+    <h3 style="font-size:20px;margin:0 0 6px;color:var(--slate-900)">Pilih Akses Portal</h3>
+    <p class="muted small" style="margin:0">Silakan pilih jenis portal untuk memulai sesi.</p>
+    
+    <div class="portal-options">
+      <button class="portal-option" onclick="tryGuruLogin()">
+        <span style="font-size:32px">👩‍🏫</span>
+        <span>
+          <b style="font-size:15px;display:block;color:var(--slate-900)">Portal Guru 🔒</b>
+          <small class="muted">Akses terlindungi PIN kata sandi untuk mengelola data & intervensi.</small>
+        </span>
+      </button>
+      <button class="portal-option" onclick="setPortal('murid')">
+        <span style="font-size:32px">👨‍🎓</span>
+        <span>
+          <b style="font-size:15px;display:block;color:var(--slate-900)">Portal Murid</b>
+          <small class="muted">Akses laporan hasil belajar, materi, tugas, dan re-asesmen.</small>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <header class="top">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="brand-mini">N<span>A</span>RASI</div>
+      <span class="badge" id="portalBadge" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3)">GURU</span>
+    </div>
+    <div class="user" style="gap:8px; flex-wrap:wrap;">
+      <span id="userName">Portal Guru</span>
+      <div id="avatarContainer"></div>
+      <!-- Tombol Cloud Google Sheets yang ditambahkan dengan aman -->
+      <button class="btn btn-success small" onclick="syncToCloud()" title="Sinkron ke Sheets" style="padding:8px 12px">☁️ Sinkron</button>
+      <button class="btn btn-secondary small" onclick="fetchFromCloud()" title="Tarik dari Sheets" style="padding:8px 12px">📥 Tarik</button>
+      <button class="btn btn-secondary small" onclick="openGasModal()" title="Pengaturan URL Sheets" style="padding:8px 12px">⚙️ URL</button>
+      <button class="btn btn-secondary small" onclick="toggleTheme()" title="Ubah Tema Gelap/Terang" style="padding:8px 12px">🌓</button>
+      <button class="btn btn-secondary small" onclick="openPortalChooser()" style="margin-left:4px">Ganti Portal</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="side" id="side"></aside>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+
+const DB_KEY = "NARASI_PRO_DB";
+const SESSION_KEY = "NARASI_PRO_SESSION";
+const STUDENT_SESSION_KEY = "NARASI_PRO_MURID";
+const THEME_KEY = "NARASI_THEME";
+const GAS_KEY = "NARASI_GAS_URL"; // Tambahan variabel URL Sheets
+
+const seed = {
+  students: [
+    {id: "M001", name: "Alya Putri", className: "V", pin: "1001", status: "Aktif", avatar: null},
+    {id: "M002", name: "Bima Pratama", className: "V", pin: "1002", status: "Aktif", avatar: null},
+    {id: "M003", name: "Citra Lestari", className: "V", pin: "1003", status: "Aktif", avatar: null}
+  ],
+  assessments: [
+    {id: "A001", studentId: "M001", type: "Diagnostik", subject: "Bahasa Indonesia", score: 82, date: "2026-09-20", note: "Memahami teks dengan baik"},
+    {id: "A002", studentId: "M002", type: "Formatif", subject: "Bahasa Indonesia", score: 62, date: "2026-09-21", note: "Perlu bimbingan ide pokok"},
+    {id: "A003", studentId: "M003", type: "Sumatif", subject: "Bahasa Indonesia", score: 88, date: "2026-09-22", note: "Sangat baik"}
+  ],
+  plans: [
+    {id: "P001", studentId: "M002", subject: "Bahasa Indonesia", title: "Pendampingan Membaca Terbimbing", text: "Latihan menemukan kalimat utama cerita.", status: "Rencana"}
+  ],
+  actions: [
+    {id: "ACT001", studentId: "M002", planId: "P001", subject: "Bahasa Indonesia", title: "Sesi Klinik Baca Jam Ke-0", text: "Pendampingan 15 menit sebelum KBM.", status: "Berjalan"}
+  ],
+  reassessments: [
+    {id: "R001", studentId: "M002", subject: "Bahasa Indonesia", initialScore: 62, score: 78, date: "2026-09-28", note: "Peningkatan signifikan"}
+  ],
+  strategies: [
+    {id: "STR001", tier: "Intervensi Intensif", title: "Visual Story Mapping", desc: "Menggunakan diagram alir bergambar untuk memahami masalah tokoh."},
+    {id: "STR002", tier: "Gamifikasi", title: "Gamified Challenge & Reward Board", desc: "Mengubah asesmen atau materi sulit menjadi permainan papan atau kuis petualangan."},
+    {id: "STR003", tier: "Inquiry-Based", title: "Mystery Box / Phenomenon-Based Inquiry", desc: "Memulai pembelajaran dengan menyajikan fenomena unik atau kotak misteri."}
+  ],
+  interventions: [
+    {id: "INT001", studentId: "M002", subject: "Bahasa Indonesia", title: "Intervensi Individu Ide Pokok", text: "Pendampingan kartu paragraf bergambar.", date: "2026-09-25"}
+  ],
+  reflections: [
+    {id: "REF001", date: "2026-09-28", note: "Intervensi visual sangat membantu Bima memahami teks."}
+  ],
+  materials: [
+    {id: "MAT001", title: "Permasalahan Tokoh & Solusi", subject: "Bahasa Indonesia", type: "Video", url: "https://www.youtube.com/watch?v=demo", description: "Langkah mudah menemukan masalah tokoh dalam cerita.", doneBy: {"M002": true}}
+  ],
+  tasks: [
+    {id: "TSK001", title: "Latihan Ide Pokok Paragraf", subject: "Bahasa Indonesia", due: "2026-10-05", description: "Tentukan ide pokok dari cerita pendek terlampir.", submissions: [
+      {studentId: "M002", answer: "Ide pokok paragraf pertama adalah perjuangan tokoh Alya membantu ibunya.", date: "2026-09-29 10:15"}
+    ]}
+  ],
+  teacher: {
+    name: "Ibu Widya Suarni, S.Pd.",
+    nip: "199408122019032011",
+    pin: "123456",
+    subject: "Bahasa Indonesia",
+    school: "SD Negeri 23 Meulaboh",
+    schoolAddress: "Kabupaten Aceh Barat, Aceh",
+    avatar: null
+  },
+  customSubjects: ["Bahasa Indonesia", "Matematika", "IPAS", "Pendidikan Pancasila", "Seni Budaya", "PJOK"]
+};
+
+let db = loadDB();
+let role = localStorage.getItem(SESSION_KEY) || null;
+let currentStudentId = localStorage.getItem(STUDENT_SESSION_KEY) || null;
+let view = "home";
+let selectedSubject = localStorage.getItem("NARASI_SUBJECT") || "Bahasa Indonesia";
+let searchQuery = "";
+let gasUrl = localStorage.getItem(GAS_KEY) || ""; // Tambahan variabel URL Sheets
+
+initTheme();
+
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY) || "dark";
+  document.body.setAttribute("data-theme", savedTheme);
+}
+
+function toggleTheme() {
+  const current = document.body.getAttribute("data-theme");
+  const next = current === "dark" ? "light" : "dark";
+  document.body.setAttribute("data-theme", next);
+  localStorage.setItem(THEME_KEY, next);
+  toast("Tema dialihkan ke " + (next === "dark" ? "Gelap Estetik" : "Terang Bersih"), "success");
+}
+
+function loadDB() {
+  try {
+    const x = JSON.parse(localStorage.getItem(DB_KEY));
+    return x && Array.isArray(x.students) ? Object.assign(JSON.parse(JSON.stringify(seed)), x) : JSON.parse(JSON.stringify(seed));
+  } catch (e) { return JSON.parse(JSON.stringify(seed)); }
+}
+function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function uid(p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function esc(v) { return String(v??"").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m])); }
+function student(id) { return db.students.find(s => s.id === id); }
+function currentStudent() { return currentStudentId ? student(currentStudentId) : null; }
+
+function toast(msg, type = "success") {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast show " + type;
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2500);
+}
+
+function modal(title, body, buttons) {
+  const old = document.querySelector(".modal-backdrop"); if (old) old.remove();
+  const el = document.createElement("div"); el.className = "modal-backdrop";
+  el.innerHTML = `<div class="modal"><div class="modal-head"><h3 style="margin:0">${esc(title)}</h3><button class="btn btn-secondary small" data-close>✕</button></div><div class="modal-body">${body}</div><div class="modal-foot">${buttons || '<button class="btn btn-secondary" data-close>Tutup</button>'}</div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener("click", e => { if (e.target === el || e.target.closest("[data-close]")) el.remove(); });
+  return el;
+}
+
+function getSubjectsList() {
+  return db.customSubjects && db.customSubjects.length ? db.customSubjects : ["Bahasa Indonesia", "Matematika", "IPAS", "Pendidikan Pancasila", "Seni Budaya", "PJOK"];
+}
+
+function subjectFilterHTML() {
+  const subs = getSubjectsList();
+  if (!subs.includes(selectedSubject)) selectedSubject = subs[0];
+  return `<div class="student-filter">
+    <b>Mata Pelajaran Aktif:</b>
+    <select onchange="selectedSubject=this.value;localStorage.setItem('NARASI_SUBJECT',this.value);render()">
+      ${subs.map(s => `<option value="${s}" ${selectedSubject===s?"selected":""}>${s}</option>`).join("")}
+    </select>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <input type="text" id="globalSearch" placeholder="🔍 Cari nama murid..." value="${esc(searchQuery)}" oninput="searchQuery=this.value;render()" style="padding:8px 12px;border-radius:8px;border:1px solid var(--slate-300);font-size:12px;width:180px">
+    </div>
+  </div>`;
+}
+
+function narasiFlowHeader(activeLetter) {
+  const stages = [
+    {l:"N", t:"Nilai", v:"nilai", d:"Data Asesmen"},
+    {l:"A", t:"Analisis", v:"analisis", d:"Pemetaan Target"},
+    {l:"R", t:"Rencana", v:"rencana", d:"Strategi Pendampingan"},
+    {l:"A", t:"Aksi", v:"aksi", d:"Program Nyata"},
+    {l:"S", t:"Strategi", v:"strategi", d:"Diferensiasi"},
+    {l:"I", t:"Intervensi", v:"intervensi", d:"Bimbingan Khusus"},
+    {l:"↻", t:"Re-Asesmen", v:"reassess", d:"Ukur Kemajuan"}
+  ];
+  return `<div class="narasi-flow">
+    ${stages.map(s => `
+      <div class="flow-card ${activeLetter===s.l?'active':''}" onclick="view='${s.v}';searchQuery='';render()">
+        <div class="letter">${s.l}</div>
+        <div class="title">${s.t}</div>
+        <div class="desc">${s.d}</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function realChartHTML() {
+  const list = db.students.map(s => {
+    const ass = db.assessments.filter(a => a.studentId === s.id && a.subject === selectedSubject);
+    const avg = ass.length ? Math.round(ass.reduce((n, a) => n + a.score, 0) / ass.length) : 0;
+    const reass = db.reassessments.find(r => r.studentId === s.id && r.subject === selectedSubject);
+    return { name: s.name, initial: avg, reassessment: reass ? reass.score : 0 };
+  });
+
+  return `
+    <div class="section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h3 style="margin:0">📊 Grafik Kemajuan Pembelajaran Murid (${selectedSubject})</h3>
+          <p class="muted small" style="margin:4px 0 0">Membandingkan Nilai Awal dengan Nilai Hasil Re-Asesmen secara Real-Time.</p>
+        </div>
+        <div style="display:flex;gap:16px;align-items:center;font-size:12px">
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:12px;height:12px;background:var(--blue);display:inline-block;border-radius:3px"></i> Nilai Awal</span>
+          <span style="display:flex;align-items:center;gap:6px"><i style="width:12px;height:12px;background:var(--emerald);display:inline-block;border-radius:3px"></i> Re-Asesmen</span>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        ${list.map(x => `
+          <div class="chart-group">
+            <div class="chart-bars">
+              <div class="chart-bar initial" style="height:${Math.max(x.initial, 5)}%">
+                <span class="chart-bar-val">${x.initial || ''}</span>
+              </div>
+              <div class="chart-bar reassessment" style="height:${Math.max(x.reassessment, 5)}%">
+                <span class="chart-bar-val">${x.reassessment || ''}</span>
+              </div>
+            </div>
+            <div class="chart-label">${esc(x.name.split(' ')[0])}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function exportToExcel() {
+  let csv = `ID Murid,Nama Murid,Nilai Awal,Status Target,Rencana/Aksi,Intervensi,Re-Asesmen,Delta\n`;
+  db.students.forEach(s => {
+    const ass = db.assessments.filter(a => a.studentId === s.id && a.subject === selectedSubject);
+    const avg = ass.length ? Math.round(ass.reduce((n, a) => n + a.score, 0) / ass.length) : 0;
+    const hasPlan = db.plans.find(p => p.studentId === s.id && p.subject === selectedSubject);
+    const hasAction = db.actions.find(a => a.studentId === s.id && a.subject === selectedSubject);
+    const hasInt = db.interventions.find(i => i.studentId === s.id && i.subject === selectedSubject);
+    const reass = db.reassessments.find(r => r.studentId === s.id && r.subject === selectedSubject);
+    const delta = reass ? (reass.score - reass.initialScore) : 0;
+    csv += `"${s.id}","${s.name}","${avg}","${avg >= 75 ? 'Tercapai' : 'Perlu Pendampingan'}","${hasAction ? hasAction.title : (hasPlan ? hasPlan.title : '-')}","${hasInt ? hasInt.title : '-'}","${reass ? reass.score : '-'}","${reass ? delta : '-'}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `LAPORAN_NARASI_${selectedSubject.toUpperCase().replace(/\s+/g, '_')}.csv`;
+  a.click();
+  toast("Laporan Excel (.csv) berhasil diunduh!", "success");
+}
+
+function exportToWord() {
+  const content = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><title>Laporan NARASI</title><style>body{font-family:Arial,sans-serif;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #333;padding:8px;font-size:12px;} th{background:#f2f2f2;}</style></head>
+    <body>
+      <h2 style="text-align:center">${db.teacher.school || 'SD NEGERI 23 MEULABOH'}</h2>
+      <p style="text-align:center">${db.teacher.schoolAddress || 'Kabupaten Aceh Barat'}</p>
+      <hr><h3 style="text-align:center">LAPORAN PEMBELAJARAN TERPADU SIKLUS N-A-R-A-S-I</h3>
+      <p style="text-align:center"><b>Mata Pelajaran: ${selectedSubject}</b></p><br>
+      <p><b>Guru Pengampu:</b> ${db.teacher.name}<br><b>NIP:</b> ${db.teacher.nip}</p>
+      <h3>Rekapitulasi Capaian & Intervensi Murid</h3>
+      <table><thead><tr><th>ID</th><th>Nama Murid</th><th>Nilai</th><th>Status</th><th>Rencana</th><th>Re-Asesmen</th></tr></thead>
+      <tbody>
+        ${db.students.map(s => {
+          const ass = db.assessments.filter(a => a.studentId === s.id && a.subject === selectedSubject);
+          const avg = ass.length ? Math.round(ass.reduce((n, a) => n + a.score, 0) / ass.length) : 0;
+          const reass = db.reassessments.find(r => r.studentId === s.id && r.subject === selectedSubject);
+          return `<tr><td>${s.id}</td><td><b>${s.name}</b></td><td>${avg}</td><td>${avg >= 75 ? 'Tercapai' : 'Perlu Pendampingan'}</td><td>-</td><td>${reass ? reass.score : '-'}</td></tr>`;
+        }).join('')}
+      </tbody></table>
+    </body></html>`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff', content], { type: 'application/msword' }));
+  a.download = `LAPORAN_NARASI_${selectedSubject.toUpperCase().replace(/\s+/g, '_')}.doc`;
+  a.click();
+  toast("Laporan Word (.doc) berhasil diunduh!", "success");
+}
+
+function tryGuruLogin() {
+  const m = modal("🔒 Akses Portal Guru", `
+    <p class="muted small">Masukkan PIN Kata Sandi Guru untuk melanjutkan.</p>
+    <div style="display:grid;gap:12px;margin-top:12px">
+      <div><label class="small font-weight:700">PIN Sandi Guru</label><input id="gPinInput" type="password" placeholder="Default: 123456" style="width:100%;padding:10px;border-radius:8px;border:1px solid #cbd5e1"></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnGLogin">Masuk Portal Guru</button>`);
+
+  m.querySelector("#btnGLogin").onclick = () => {
+    if (m.querySelector("#gPinInput").value.trim() === (db.teacher.pin || "123456")) {
+      m.remove(); setPortal('guru'); toast("Berhasil masuk Portal Guru!", "success");
+    } else { toast("PIN Sandi Guru salah!", "error"); }
+  };
+}
+
+function backupDatabaseJSON() {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' }));
+  a.download = `NARASI_BACKUP_${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  toast("Cadangan data (.json) berhasil diunduh!", "success");
+}
+
+function restoreDatabaseJSON(fileInput) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const restored = JSON.parse(e.target.result);
+      if (restored && Array.isArray(restored.students)) {
+        db = Object.assign(JSON.parse(JSON.stringify(seed)), restored);
+        saveDB(); render(); toast("Data NARASI berhasil dipulihkan!", "success");
+      } else { toast("Berkas JSON tidak valid!", "error"); }
+    } catch (err) { toast("Gagal membaca berkas.", "error"); }
+  };
+  reader.readAsText(file);
+}
+
+function editTeacherProfileModal() {
+  const t = db.teacher;
+  const m = modal("⚙️ Edit Profil Guru & Sekolah", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Nama Lengkap & Gelar</label><input id="epName" value="${esc(t.name)}" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">NIP</label><input id="epNip" value="${esc(t.nip)}" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">PIN Sandi Baru</label><input id="epPin" type="password" value="${esc(t.pin || '123456')}" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Nama Sekolah</label><input id="epSchool" value="${esc(t.school || '')}" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Alamat Sekolah</label><input id="epAddress" value="${esc(t.schoolAddress || '')}" style="width:100%;padding:10px;border-radius:8px"></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveEp">Simpan Perubahan</button>`);
+
+  m.querySelector("#btnSaveEp").onclick = () => {
+    db.teacher.name = m.querySelector("#epName").value.trim() || db.teacher.name;
+    db.teacher.nip = m.querySelector("#epNip").value.trim();
+    db.teacher.pin = m.querySelector("#epPin").value.trim() || db.teacher.pin;
+    db.teacher.school = m.querySelector("#epSchool").value.trim();
+    db.teacher.schoolAddress = m.querySelector("#epAddress").value.trim();
+    saveDB(); m.remove(); showApp(); render(); toast("Profil berhasil diperbarui!", "success");
+  };
+}
+
+function setPortal(p) {
+  role = p; localStorage.setItem(SESSION_KEY, role);
+  document.getElementById("portalChooser").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("portalBadge").textContent = role.toUpperCase();
+  if (role === "murid") chooseStudentLogin();
+  else { currentStudentId = null; localStorage.removeItem(STUDENT_SESSION_KEY); showApp(); render(); }
+}
+
+function chooseStudentLogin() {
+  const m = modal("🔑 Akses Portal Murid", `
+    <p class="muted small">Masukkan ID Murid dan PIN rahasia Anda.</p>
+    <div style="display:grid;gap:12px;margin-top:12px">
+      <div><label class="small font-weight:700">ID Murid (Contoh: M001)</label><input id="pStId" placeholder="M001" style="width:100%;padding:10px;border-radius:8px;border:1px solid #cbd5e1"></div>
+      <div><label class="small font-weight:700">PIN Murid</label><input id="pStPin" type="password" placeholder="PIN" style="width:100%;padding:10px;border-radius:8px;border:1px solid #cbd5e1"></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnStLogin">Masuk Portal Murid</button>`);
+
+  m.querySelector("#btnStLogin").onclick = () => {
+    const id = m.querySelector("#pStId").value.trim().toUpperCase();
+    const pin = m.querySelector("#pStPin").value.trim();
+    const s = db.students.find(x => x.id.toUpperCase() === id && x.pin === pin);
+    if (!s) { toast("ID Murid atau PIN salah!", "error"); return; }
+    currentStudentId = s.id; localStorage.setItem(STUDENT_SESSION_KEY, s.id);
+    m.remove(); showApp(); render(); toast("Selamat datang, " + s.name + "!", "success");
+  };
+}
+
+function openPortalChooser() {
+  role = null; localStorage.removeItem(SESSION_KEY);
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("portalChooser").classList.remove("hidden");
+}
+
+function showApp() {
+  const s = currentStudent();
+  const name = role === "guru" ? (db.teacher.name || "Portal Guru") : (s ? s.name : "Portal Murid");
+  document.getElementById("userName").textContent = name;
+  document.getElementById("avatarContainer").innerHTML = `<div class="avatar">${name[0].toUpperCase()}</div>`;
+}
+
+// Fungsi Modal Pengaturan URL Google Sheets
+function openGasModal() {
+  const m = modal("⚙️ Pengaturan URL Google Sheets", `
+    <p class="muted small">Tempelkan URL Web App dari hasil Deploy Google Apps Script Anda di bawah ini:</p>
+    <input id="gasInput" value="${gasUrl}" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%;padding:10px;border-radius:8px;border:1px solid #cbd5e1;font-size:12px;margin-top:8px">
+  `, `<button class="btn btn-primary" onclick="saveGasUrl()">Simpan URL</button>`);
+}
+
+function saveGasUrl() {
+  const input = document.getElementById("gasInput").value.trim();
+  if (!input) { toast("⚠️ URL tidak boleh kosong!", "error"); return; }
+  gasUrl = input;
+  localStorage.setItem(GAS_KEY, gasUrl);
+  document.querySelector(".modal-backdrop").remove();
+  toast("✅ URL Google Sheets berhasil disimpan!", "success");
+}
+
+async function syncToCloud() {
+  if (!gasUrl) { openGasModal(); return; }
+  toast("⏳ Mengirim data ke Google Sheets...", "success");
+  try {
+    const res = await fetch(gasUrl, { method: "POST", body: JSON.stringify(db) });
+    const json = await res.json();
+    if (json.status === "success") { toast("✅ " + json.message, "success"); } 
+    else { toast("❌ Gagal: " + json.message, "error"); }
+  } catch(e) { toast("❌ Gagal terhubung ke internet.", "error"); }
+}
+
+async function fetchFromCloud() {
+  if (!gasUrl) { openGasModal(); return; }
+  toast("⏳ Menarik data dari Google Sheets...", "success");
+  try {
+    const res = await fetch(gasUrl);
+    const json = await res.json();
+    if (json.status === "success" && json.data) {
+      db = json.data;
+      saveDB();
+      render();
+      toast("✅ Data lokal berhasil diperbarui dari Cloud!", "success");
+    } else { toast("⚠️ Data cloud masih kosong.", "warn"); }
+  } catch(e) { toast("❌ Gagal menarik data dari cloud.", "error"); }
+}
+
+const teacherNav = [
+  ["home", "🏠 Beranda Utama"],
+  ["nilai", "N — Nilai Asesmen"],
+  ["analisis", "A — Analisis Target"],
+  ["rencana", "R — Rencana Pendampingan"],
+  ["aksi", "A — Aksi Nyata"],
+  ["strategi", "S — Bank Strategi"],
+  ["intervensi", "I — Intervensi Khusus"],
+  ["reassess", "↻ Re-Asesmen"],
+  ["students", "👥 Kelola Murid"],
+  ["reflection", "📝 Jurnal Refleksi"],
+  ["materials", "📚 Kelola Materi"],
+  ["tasks", "📝 Kelola Tugas"],
+  ["reports", "📊 Laporan & Cetak"],
+  ["profile", "⚙️ Profil Guru"]
+];
+
+const studentNav = [
+  ["home", "🏠 Beranda Saya"],
+  ["stMaterials", "📚 Materi Belajar"],
+  ["stTasks", "📝 Tugas Saya"],
+  ["stAssessments", "📈 Nilai Asesmen"],
+  ["stProgress", "🎯 Perkembangan & Re-Asesmen"]
+];
+
+function buildNav() {
+  const arr = role === "guru" ? teacherNav : studentNav;
+  document.getElementById("side").innerHTML = `<h4>MENU ${role.toUpperCase()}</h4>` +
+    arr.map(x => `<button class="nav ${view===x[0]?'active':''}" onclick="handleNavClick('${x[0]}')">${x[1]}</button>`).join("");
+}
+
+function handleNavClick(targetView) {
+  if (targetView === "profile") { editTeacherProfileModal(); return; }
+  view = targetView; searchQuery = ""; render();
+}
+
+function render() {
+  if (!role) return;
+  buildNav();
+  const pages = role === "guru" ? {
+    home: teacherHomeView, nilai: nilaiView, analisis: analisisView,
+    rencana: rencanaView, aksi: aksiView, strategi: strategiView,
+    intervensi: intervensiView, reassess: reassessView,
+    students: studentsMgmtView, reflection: reflectionView,
+    materials: materialsMgmtView, tasks: tasksMgmtView, reports: reportsView
+  } : {
+    home: studentHomeView, stMaterials: studentMaterialsView,
+    stTasks: studentTasksView, stAssessments: studentAssessmentsView, stProgress: studentProgressView
+  };
+  document.getElementById("main").innerHTML = (pages[view] || pages.home)();
+}
+
+function teacherHomeView() {
+  const target = 75;
+  const list = db.students.map(s => {
+    const ass = db.assessments.filter(a => a.studentId === s.id && a.subject === selectedSubject);
+    const avg = ass.length ? Math.round(ass.reduce((n, a) => n + a.score, 0) / ass.length) : 0;
+    const reass = db.reassessments.find(r => r.studentId === s.id && r.subject === selectedSubject);
+    return { student: s, avg, reassScore: reass ? reass.score : null };
+  });
+
+  const filteredList = list.filter(x => x.student.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  return `
+    <div class="page-head">
+      <div>
+        <h2>Siklus Pembelajaran Terpadu NARASI</h2>
+        <div class="muted small">Kelola asesmen, analisis, rencana, aksi, strategi, dan intervensi peserta didik.</div>
+      </div>
+    </div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('')}
+    ${realChartHTML()}
+
+    <div class="cards" style="margin-top:20px">
+      <div class="card"><div class="stat-label">Total Peserta Didik</div><div class="stat">${db.students.length}</div></div>
+      <div class="card"><div class="stat-label">Perlu Intervensi</div><div class="stat" style="color:var(--rose)">${list.filter(x => x.avg > 0 && x.avg < target).length}</div></div>
+      <div class="card"><div class="stat-label">Target Tercapai</div><div class="stat" style="color:var(--emerald)">${list.filter(x => x.avg >= target).length}</div></div>
+    </div>
+
+    <div class="section" style="margin-top:20px">
+      <h3>Ringkasan Status Capaian Murid (${selectedSubject})</h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Peserta Didik</th><th>Nilai Awal (Rata-Rata)</th><th>Status Ketuntasan</th><th>Aksi Cepat</th></tr></thead>
+          <tbody>
+            ${filteredList.map(x => `<tr>
+              <td><b>${esc(x.student.name)}</b></td>
+              <td><b>${x.avg || '-'}</b></td>
+              <td><span class="badge ${x.avg >= target ? '' : 'warn'}">${x.avg >= target ? 'Tercapai' : 'Perlu Pendampingan'}</span></td>
+              <td><button class="btn btn-primary small" onclick="quickAddPlan('${x.student.id}')">+ Buat Rencana (R)</button></td>
+            </tr>`).join('') || `<tr><td colspan="4"><div class="empty-state"><div class="icon">🔍</div><div>Tidak ditemukan nama peserta didik yang sesuai.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function nilaiView() {
+  const filtered = db.assessments.filter(a => a.subject === selectedSubject && student(a.studentId)?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  return `
+    <div class="page-head">
+      <h2>N — Nilai Asesmen (${selectedSubject})</h2>
+      <button class="btn btn-primary" onclick="addAssessmentModal()">+ Tambah Nilai Asesmen</button>
+    </div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('N')}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Murid</th><th>Jenis Asesmen</th><th>Nilai</th><th>Tanggal</th><th>Catatan Guru</th></tr></thead>
+          <tbody>
+            ${filtered.map(a => `<tr>
+              <td><b>${esc(student(a.studentId)?.name)}</b></td>
+              <td><span class="badge">${esc(a.type)}</span></td>
+              <td><b style="color:var(--blue)">${a.score}</b></td>
+              <td>${esc(a.date)}</td>
+              <td>${esc(a.note)}</td>
+            </tr>`).join('') || `<tr><td colspan="5"><div class="empty-state"><div class="icon">📭</div><div>Belum ada data asesmen untuk mapel ini.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function addAssessmentModal() {
+  const m = modal("Tambah Nilai Asesmen", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Peserta Didik</label><select id="aSt" style="width:100%;padding:10px;border-radius:8px">${db.students.map(s => `<option value="${s.id}">${s.name}</option>`).join("")}</select></div>
+      <div><label class="small font-weight:700">Jenis Asesmen</label><select id="aType" style="width:100%;padding:10px;border-radius:8px"><option>Diagnostik</option><option>Formatif</option><option>Sumatif</option></select></div>
+      <div><label class="small font-weight:700">Nilai (0-100)</label><input id="aScore" type="number" value="75" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Catatan / Keterangan</label><input id="aNote" placeholder="Keterangan pencapaian..." style="width:100%;padding:10px;border-radius:8px"></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveAss">Simpan Nilai</button>`);
+
+  m.querySelector("#btnSaveAss").onclick = () => {
+    db.assessments.push({
+      id: uid("A"), studentId: m.querySelector("#aSt").value,
+      subject: selectedSubject, type: m.querySelector("#aType").value,
+      score: Number(m.querySelector("#aScore").value), date: new Date().toISOString().slice(0, 10),
+      note: m.querySelector("#aNote").value.trim()
+    });
+    saveDB(); m.remove(); render(); toast("Nilai asesmen berhasil disimpan!", "success");
+  };
+}
+
+function analisisView() {
+  const list = db.students.map(s => {
+    const ass = db.assessments.filter(a => a.studentId === s.id && a.subject === selectedSubject);
+    const avg = ass.length ? Math.round(ass.reduce((n, a) => n + a.score, 0) / ass.length) : 0;
+    return { student: s, avg };
+  }).filter(x => x.avg > 0 && x.student.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  return `
+    <div class="page-head"><h2>A — Analisis Capaian Belajar (${selectedSubject})</h2></div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('A')}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Murid</th><th>Rata-Rata Nilai</th><th>Status Target</th><th>Tindak Lanjut</th></tr></thead>
+          <tbody>
+            ${list.map(x => `<tr>
+              <td><b>${esc(x.student.name)}</b></td>
+              <td><b>${x.avg}</b></td>
+              <td><span class="badge ${x.avg>=75?'':'warn'}">${x.avg>=75?'Tuntas':'Perlu Pendampingan'}</span></td>
+              <td><button class="btn btn-primary small" onclick="quickAddPlan('${x.student.id}')">Buat Rencana (R)</button></td>
+            </tr>`).join('') || `<tr><td colspan="4"><div class="empty-state"><div class="icon">📊</div><div>Belum ada data analisis.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function rencanaView() {
+  const list = db.plans.filter(p => p.subject === selectedSubject && student(p.studentId)?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  return `
+    <div class="page-head">
+      <h2>R — Rencana Pendampingan (${selectedSubject})</h2>
+      <button class="btn btn-primary" onclick="addManualPlanModal()">+ Buat Rencana Manual</button>
+    </div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('R')}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Murid</th><th>Judul Rencana</th><th>Detail Pendampingan</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${list.map(p => `<tr>
+              <td><b>${esc(student(p.studentId)?.name)}</b></td>
+              <td><b>${esc(p.title)}</b></td>
+              <td>${esc(p.text)}</td>
+              <td>
+                <button class="btn btn-danger small" onclick="deletePlan('${p.id}')">Hapus</button>
+                <button class="btn btn-success small" onclick="convertPlanToAction('${p.id}')">Pindah ke AKSI ➔</button>
+              </td>
+            </tr>`).join('') || `<tr><td colspan="4"><div class="empty-state"><div class="icon">📝</div><div>Belum ada rencana pendampingan.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function addManualPlanModal() {
+  const m = modal("Buat Rencana Pendampingan", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Peserta Didik</label><select id="mpStId" style="width:100%;padding:10px;border-radius:8px">${db.students.map(s => `<option value="${s.id}">${s.name}</option>`).join("")}</select></div>
+      <div><label class="small font-weight:700">Judul Rencana</label><input id="mpTitle" placeholder="Misal: Bimbingan Membaca Intensif" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Detail Pendampingan</label><textarea id="mpText" placeholder="Uraian langkah pendampingan..." style="width:100%;padding:10px;border-radius:8px;min-height:80px"></textarea></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveMp">Simpan Rencana</button>`);
+
+  m.querySelector("#btnSaveMp").onclick = () => {
+    const title = m.querySelector("#mpTitle").value.trim();
+    const text = m.querySelector("#mpText").value.trim();
+    if (!title || !text) { toast("Judul dan detail rencana wajib diisi!", "error"); return; }
+    db.plans.push({ id: uid("P"), studentId: m.querySelector("#mpStId").value, subject: selectedSubject, title, text, status: "Rencana" });
+    saveDB(); m.remove(); render(); toast("Rencana berhasil disimpan!", "success");
+  };
+}
+
+function deletePlan(id) {
+  if (confirm("Hapus rencana pendampingan ini?")) {
+    db.plans = db.plans.filter(x => x.id !== id);
+    saveDB(); render(); toast("Rencana berhasil dihapus.", "warn");
+  }
+}
+
+function quickAddPlan(studentId) {
+  db.plans.push({ id: uid("P"), studentId, subject: selectedSubject, title: "Pendampingan Khusus Konsep Dasar", text: "Latihan terbimbing sesuai kebutuhan belajar siswa.", status: "Rencana" });
+  saveDB(); view = "rencana"; render(); toast("Rencana pendampingan otomatis dibuat!", "success");
+}
+
+function convertPlanToAction(planId) {
+  const p = db.plans.find(x => x.id === planId);
+  if (!p) return;
+  db.actions.push({ id: uid("ACT"), studentId: p.studentId, planId: p.id, subject: p.subject, title: p.title, text: p.text, status: "Berjalan" });
+  saveDB(); view = "aksi"; render(); toast("Rencana berhasil dipindahkan ke Aksi Nyata!", "success");
+}
+
+function aksiView() {
+  const list = db.actions.filter(a => a.subject === selectedSubject && student(a.studentId)?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  return `
+    <div class="page-head"><h2>A — Aksi Nyata Pelaksanaan (${selectedSubject})</h2></div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('A')}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Murid</th><th>Aksi Nyata</th><th>Status Pelaksanaan</th><th>Tindak Lanjut</th></tr></thead>
+          <tbody>
+            ${list.map(a => `<tr>
+              <td><b>${esc(student(a.studentId)?.name)}</b></td>
+              <td><b>${esc(a.title)}</b></td>
+              <td><span class="badge">${esc(a.status)}</span></td>
+              <td><button class="btn btn-primary small" onclick="quickReassess('${a.studentId}')">Lakukan Re-Asesmen (↻)</button></td>
+            </tr>`).join('') || `<tr><td colspan="4"><div class="empty-state"><div class="icon">🚀</div><div>Belum ada aksi nyata aktif.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function strategiView() {
+  return `
+    <div class="page-head">
+      <h2>S — Bank Strategi & Metode Pembelajaran</h2>
+      <button class="btn btn-primary" onclick="addStrategyModal()">+ Tambah Strategi Baru</button>
+    </div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('S')}
+    <div class="section">
+      <div class="cards">
+        ${(db.strategies || []).map(st => `<div class="card" style="display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <span class="badge warn">${esc(st.tier)}</span>
+            <h4 style="margin:10px 0 6px">${esc(st.title)}</h4>
+            <p class="muted small">${esc(st.desc)}</p>
+          </div>
+          <button class="btn btn-danger small" style="margin-top:16px;align-self:flex-start" onclick="deleteStrategy('${st.id}')">Hapus</button>
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function addStrategyModal() {
+  const m = modal("Tambah Strategi Pembelajaran", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Kategori / Tier</label><input id="stTier" placeholder="Gamifikasi / Diferensiasi" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Judul Strategi</label><input id="stTitle" placeholder="Nama metode..." style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Deskripsi & Langkah</label><textarea id="stDesc" placeholder="Penjelasan metode..." style="width:100%;padding:10px;border-radius:8px;min-height:80px"></textarea></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveStg">Simpan Strategi</button>`);
+
+  m.querySelector("#btnSaveStg").onclick = () => {
+    db.strategies = db.strategies || [];
+    db.strategies.push({ id: uid("STR"), tier: m.querySelector("#stTier").value || "Umum", title: m.querySelector("#stTitle").value, desc: m.querySelector("#stDesc").value });
+    saveDB(); m.remove(); render(); toast("Strategi baru berhasil ditambahkan!", "success");
+  };
+}
+
+function deleteStrategy(id) {
+  db.strategies = db.strategies.filter(s => s.id !== id);
+  saveDB(); render(); toast("Strategi berhasil dihapus.", "warn");
+}
+
+function intervensiView() {
+  const list = db.interventions.filter(i => i.subject === selectedSubject && student(i.studentId)?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  return `
+    <div class="page-head"><h2>I — Intervensi Khusus (${selectedSubject})</h2></div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('I')}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Murid</th><th>Bentuk Intervensi</th><th>Tanggal Pelaksanaan</th></tr></thead>
+          <tbody>
+            ${list.map(i => `<tr><td><b>${esc(student(i.studentId)?.name)}</b></td><td>${esc(i.title)}</td><td>${esc(i.date)}</td></tr>`).join('') || `<tr><td colspan="3"><div class="empty-state"><div class="icon">💡</div><div>Belum ada catatan intervensi khusus.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function reassessView() {
+  const list = db.reassessments.filter(r => r.subject === selectedSubject && student(r.studentId)?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  return `
+    <div class="page-head"><h2>↻ Re-Asesmen & Pengukuran Kemajuan (${selectedSubject})</h2></div>
+    ${subjectFilterHTML()}
+    ${narasiFlowHeader('↻')}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Murid</th><th>Nilai Awal</th><th>Nilai Re-Asesmen</th><th>Peningkatan (Delta)</th><th>Catatan Perkembangan</th></tr></thead>
+          <tbody>
+            ${list.map(r => {
+              const delta = r.score - r.initialScore;
+              return `<tr>
+                <td><b>${esc(student(r.studentId)?.name)}</b></td>
+                <td>${r.initialScore}</td>
+                <td><b style="color:var(--emerald)">${r.score}</b></td>
+                <td><b style="color:${delta>=0?'var(--emerald)':'var(--rose)'}">${delta>=0?'+'+delta:delta} Pt</b></td>
+                <td>${esc(r.note)}</td>
+              </tr>`;
+            }).join('') || `<tr><td colspan="5"><div class="empty-state"><div class="icon">📈</div><div>Belum ada data re-asesmen untuk mapel ini.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function quickReassess(studentId) {
+  const s = student(studentId);
+  const ass = db.assessments.filter(a => a.studentId === studentId && a.subject === selectedSubject);
+  const initial = ass.length ? ass[0].score : 60;
+  const m = modal("Catat Re-Asesmen", `
+    <p>Peserta Didik: <b>${s.name}</b> | Nilai Asesmen Awal: <b>${initial}</b></p>
+    <div style="display:grid;gap:12px;margin-top:10px">
+      <div><label class="small font-weight:700">Nilai Re-Asesmen Baru</label><input id="rScore" type="number" value="85" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Catatan Perkembangan</label><input id="rNote" value="Peningkatan pemahaman konsep sangat baik." style="width:100%;padding:10px;border-radius:8px"></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveR">Simpan Re-Asesmen</button>`);
+
+  m.querySelector("#btnSaveR").onclick = () => {
+    db.reassessments.push({ id: uid("R"), studentId, subject: selectedSubject, initialScore: initial, score: Number(m.querySelector("#rScore").value), date: new Date().toISOString().slice(0, 10), note: m.querySelector("#rNote").value.trim() });
+    saveDB(); m.remove(); view = "reassess"; render(); toast("Re-Asesmen berhasil disimpan!", "success");
+  };
+}
+
+function studentsMgmtView() {
+  const list = db.students.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  return `
+    <div class="page-head">
+      <h2>👥 Kelola Data Peserta Didik</h2>
+      <button class="btn btn-primary" onclick="addStudentModal()">+ Tambah Murid</button>
+    </div>
+    <div style="margin-bottom:16px"><input type="text" placeholder="🔍 Cari murid..." value="${esc(searchQuery)}" oninput="searchQuery=this.value;render()" style="padding:10px 14px;border-radius:8px;border:1px solid var(--slate-300);width:240px"></div>
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>ID</th><th>Nama Lengkap</th><th>Kelas</th><th>PIN Portal</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${list.map(s => `<tr>
+              <td><b>${s.id}</b></td>
+              <td><b>${esc(s.name)}</b></td>
+              <td>${esc(s.className)}</td>
+              <td><code>${esc(s.pin)}</code></td>
+              <td><button class="btn btn-danger small" onclick="deleteStudent('${s.id}')">Hapus</button></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function addStudentModal() {
+  const m = modal("Tambah Peserta Didik", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">ID Murid</label><input id="stId" placeholder="M004" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Nama Lengkap</label><input id="stName" placeholder="Nama lengkap anak..." style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Kelas</label><input id="stClass" value="V" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">PIN Portal Murid</label><input id="stPin" value="1234" style="width:100%;padding:10px;border-radius:8px"></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveSt">Simpan Murid</button>`);
+
+  m.querySelector("#btnSaveSt").onclick = () => {
+    const id = m.querySelector("#stId").value.trim().toUpperCase();
+    const name = m.querySelector("#stName").value.trim();
+    if (!id || !name) { toast("ID dan Nama murid wajib diisi!", "error"); return; }
+    db.students.push({ id, name, className: m.querySelector("#stClass").value, pin: m.querySelector("#stPin").value, status: "Aktif", avatar: null });
+    saveDB(); m.remove(); render(); toast("Peserta didik berhasil ditambahkan!", "success");
+  };
+}
+
+function deleteStudent(id) {
+  if (confirm("Hapus data peserta didik ini?")) {
+    db.students = db.students.filter(s => s.id !== id);
+    saveDB(); render(); toast("Data murid berhasil dihapus.", "warn");
+  }
+}
+
+function reflectionView() {
+  return `
+    <div class="page-head">
+      <h2>📝 Jurnal Refleksi Pembelajaran Guru</h2>
+      <button class="btn btn-primary" onclick="addReflectionModal()">+ Buat Refleksi Baru</button>
+    </div>
+    <div class="section">
+      <div style="display:grid;gap:16px">
+        ${(db.reflections || []).map(r => `<div style="background:var(--glass-bg);border-radius:14px;padding:18px;border:1px solid var(--glass-border)">
+          <span class="badge warn">${esc(r.date)}</span>
+          <p style="margin:10px 0 0;font-size:13.5px;line-height:1.6">${esc(r.note)}</p>
+        </div>`).join('') || '<div class="empty-state"><div class="icon">📔</div><div>Belum ada catatan jurnal refleksi.</div></div>'}
+      </div>
+    </div>
+  `;
+}
+
+function addReflectionModal() {
+  const m = modal("Tambah Jurnal Refleksi", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Tanggal</label><input id="rfDate" type="date" value="${new Date().toISOString().slice(0, 10)}" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Catatan Refleksi Pembelajaran</label><textarea id="rfNote" placeholder="Tuliskan refleksi kegiatan pembelajaran hari ini..." style="width:100%;padding:10px;border-radius:8px;min-height:90px"></textarea></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveRf">Simpan Refleksi</button>`);
+
+  m.querySelector("#btnSaveRf").onclick = () => {
+    const note = m.querySelector("#rfNote").value.trim();
+    if (!note) { toast("Catatan refleksi wajib diisi!", "error"); return; }
+    db.reflections = db.reflections || [];
+    db.reflections.unshift({ id: uid("REF"), date: m.querySelector("#rfDate").value, note });
+    saveDB(); m.remove(); render(); toast("Refleksi berhasil disimpan!", "success");
+  };
+}
+
+function materialsMgmtView() {
+  const list = db.materials.filter(m => m.subject === selectedSubject);
+  return `
+    <div class="page-head">
+      <h2>📚 Kelola Materi Belajar (${selectedSubject})</h2>
+      <button class="btn btn-primary" onclick="addMaterialModal()">+ Terbitkan Materi</button>
+    </div>
+    ${subjectFilterHTML()}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Judul Materi</th><th>Tipe</th><th>Tautan</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${list.map(m => `<tr><td><b>${esc(m.title)}</b></td><td><span class="badge">${esc(m.type)}</span></td><td>${m.url?`<a href="${esc(m.url)}" target="_blank" style="color:var(--blue)">Buka Tautan</a>`:'-'}</td><td><button class="btn btn-danger small" onclick="deleteMaterial('${m.id}')">Hapus</button></td></tr>`).join('') || `<tr><td colspan="4"><div class="empty-state"><div class="icon">📂</div><div>Belum ada materi diterbitkan.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function addMaterialModal() {
+  const m = modal("Terbitkan Materi Belajar", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Judul Materi</label><input id="mTitle" placeholder="Judul materi..." style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Tipe Media</label><select id="mType" style="width:100%;padding:10px;border-radius:8px"><option>Video</option><option>Buku / Teks</option><option>Infografis</option></select></div>
+      <div><label class="small font-weight:700">URL Tautan</label><input id="mUrl" placeholder="https://..." style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Deskripsi Ringkas</label><textarea id="mDesc" placeholder="Keterangan materi..." style="width:100%;padding:10px;border-radius:8px"></textarea></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveM">Terbitkan</button>`);
+
+  m.querySelector("#btnSaveM").onclick = () => {
+    db.materials.push({ id: uid("MAT"), title: m.querySelector("#mTitle").value, subject: selectedSubject, type: m.querySelector("#mType").value, url: m.querySelector("#mUrl").value, description: m.querySelector("#mDesc").value, doneBy: {} });
+    saveDB(); m.remove(); render(); toast("Materi berhasil diterbitkan!", "success");
+  };
+}
+
+function deleteMaterial(id) {
+  db.materials = db.materials.filter(m => m.id !== id);
+  saveDB(); render(); toast("Materi dihapus.", "warn");
+}
+
+function tasksMgmtView() {
+  const list = db.tasks.filter(t => t.subject === selectedSubject);
+  return `
+    <div class="page-head">
+      <h2>📝 Kelola Tugas & Evaluasi (${selectedSubject})</h2>
+      <button class="btn btn-primary" onclick="addTaskModal()">+ Buat Tugas Baru</button>
+    </div>
+    ${subjectFilterHTML()}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Judul Tugas</th><th>Batas Pengumpulan</th><th>Terkumpul</th><th>Aksi</th></tr></thead>
+          <tbody>
+            ${list.map(t => `<tr><td><b>${esc(t.title)}</b></td><td>${esc(t.due)}</td><td><span class="badge">${(t.submissions||[]).length} Murid</span></td><td><button class="btn btn-danger small" onclick="deleteTask('${t.id}')">Hapus</button></td></tr>`).join('') || `<tr><td colspan="4"><div class="empty-state"><div class="icon">📋</div><div>Belum ada tugas dibuat.</div></div></td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function addTaskModal() {
+  const m = modal("Buat Tugas Baru", `
+    <div style="display:grid;gap:12px">
+      <div><label class="small font-weight:700">Judul Tugas</label><input id="tTitle" placeholder="Judul tugas..." style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Batas Waktu</label><input id="tDue" type="date" style="width:100%;padding:10px;border-radius:8px"></div>
+      <div><label class="small font-weight:700">Instruksi Pengerjaan</label><textarea id="tDesc" placeholder="Instruksi..." style="width:100%;padding:10px;border-radius:8px"></textarea></div>
+    </div>
+  `, `<button class="btn btn-primary" id="btnSaveT">Terbitkan Tugas</button>`);
+
+  m.querySelector("#btnSaveT").onclick = () => {
+    db.tasks.push({ id: uid("TSK"), title: m.querySelector("#tTitle").value, subject: selectedSubject, due: m.querySelector("#tDue").value, description: m.querySelector("#tDesc").value, submissions: [] });
+    saveDB(); m.remove(); render(); toast("Tugas berhasil diterbitkan!", "success");
+  };
+}
+
+function deleteTask(id) {
+  db.tasks = db.tasks.filter(t => t.id !== id);
+  saveDB(); render(); toast("Tugas dihapus.", "warn");
+}
+
+function reportsView() {
+  return `
+    <div class="page-head">
+      <h2>📊 Laporan Kemajuan & Cetak Dokumen (${selectedSubject})</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak / PDF</button>
+        <button class="btn btn-success" onclick="exportToExcel()">📊 Unduh Excel</button>
+        <button class="btn btn-secondary" onclick="exportToWord()">📝 Unduh Word</button>
+        <button class="btn btn-secondary" onclick="backupDatabaseJSON()">💾 Cadangan JSON</button>
+        <label class="btn btn-secondary" style="cursor:pointer">📂 Pulihkan JSON<input type="file" accept=".json" onchange="restoreDatabaseJSON(this)" style="display:none"></label>
+      </div>
+    </div>
+    ${subjectFilterHTML()}
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Nama Peserta Didik</th><th>Nilai Awal</th><th>Status Ketuntasan</th><th>Re-Asesmen</th></tr></thead>
+          <tbody>
+            ${db.students.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase())).map(s => {
+              const ass = db.assessments.filter(a => a.studentId === s.id && a.subject === selectedSubject);
+              const avg = ass.length ? Math.round(ass.reduce((n, a) => n + a.score, 0) / ass.length) : 0;
+              const reass = db.reassessments.find(r => r.studentId === s.id && r.subject === selectedSubject);
+              return `<tr>
+                <td><b>${esc(s.name)}</b></td>
+                <td><b>${avg || '-'}</b></td>
+                <td><span class="badge ${avg>=75?'':'warn'}">${avg>=75?'Tercapai':'Perlu Pendampingan'}</span></td>
+                <td><b>${reass ? reass.score : '-'}</b></td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function studentHomeView() {
+  const s = currentStudent();
+  return `<div class="section" style="background:linear-gradient(135deg, var(--blue-dark), var(--blue));color:#fff">
+    <h2 style="margin-top:0">Halo, ${esc(s.name)}! 👋</h2>
+    <p style="margin:0">Selamat datang di Portal Murid NARASI Pro. Kelas: <b>${esc(s.className)}</b> | ID: <b>${esc(s.id)}</b></p>
+  </div>`;
+}
+
+function studentMaterialsView() {
+  const s = currentStudent();
+  return `
+    <div class="page-head"><h2>📚 Materi Belajar Mandiri</h2></div>
+    <div class="section">
+      <div style="display:grid;gap:14px">
+        ${db.materials.map(m => {
+          const isDone = m.doneBy && m.doneBy[s.id];
+          return `<div style="background:var(--glass-bg);padding:18px;border-radius:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <div><span class="badge">${esc(m.subject)}</span><h3 style="margin:6px 0">${esc(m.title)}</h3><p class="muted small" style="margin:0">${esc(m.description)}</p>${m.url?`<a href="${esc(m.url)}" target="_blank" style="color:var(--blue);display:inline-block;margin-top:6px;font-size:12.5px;font-weight:700">🔗 Buka Media Pembelajaran</a>`:''}</div>
+            <button class="btn ${isDone?'btn-success':'btn-secondary'}" onclick="toggleMat('${m.id}')">${isDone?'✓ Sudah Dipelajari':'Tandai Selesai'}</button>
+          </div>`;
+        }).join('') || '<div class="empty-state">Belum ada materi untuk siswa saat ini.</div>'}
+      </div>
+    </div>
+  `;
+}
+
+function toggleMat(id) {
+  const s = currentStudent();
+  const m = db.materials.find(x => x.id === id);
+  m.doneBy = m.doneBy || {};
+  if (m.doneBy[s.id]) delete m.doneBy[s.id]; else m.doneBy[s.id] = true;
+  saveDB(); render(); toast("Status materi diperbarui!", "success");
+}
+
+function studentTasksView() {
+  const s = currentStudent();
+  return `
+    <div class="page-head"><h2>📝 Tugas & Evaluasi Peserta Didik</h2></div>
+    <div class="section">
+      <div style="display:grid;gap:16px">
+        ${db.tasks.map(t => {
+          const sub = (t.submissions || []).find(sb => sb.studentId === s.id);
+          return `<div style="background:var(--glass-bg);padding:18px;border-radius:14px">
+            <span class="badge">${esc(t.subject)}</span>
+            <h3 style="margin:6px 0">${esc(t.title)}</h3>
+            <p class="muted small" style="margin:0 0 10px">${esc(t.description)}</p>
+            <div class="small muted" style="margin-bottom:10px">📅 Batas Waktu: <b>${esc(t.due)}</b></div>
+            ${sub?`<div style="background:var(--emerald-light);padding:10px;border-radius:8px;margin:10px 0;font-size:12.5px"><b>Jawaban Terkirim:</b> ${esc(sub.answer)} <div class="small muted">Waktu: ${sub.date}</div></div>`:''}
+            <button class="btn btn-primary small" onclick="submitTask('${t.id}')">${sub?'Perbarui Jawaban':'Kirim Jawaban Tugas'}</button>
+          </div>`;
+        }).join('') || '<div class="empty-state">Belum ada tugas aktif.</div>'}
+      </div>
+    </div>
+  `;
+}
+
+function submitTask(id) {
+  const s = currentStudent();
+  const t = db.tasks.find(x => x.id === id);
+  const m = modal("Kirim Jawaban Tugas", `
+    <p><b>${t.title}</b></p>
+    <textarea id="ans" style="width:100%;min-height:100px;padding:10px;border-radius:8px;border:1px solid #cbd5e1" placeholder="Tuliskan jawaban atau hasil pengerjaan Anda di sini..."></textarea>
+  `, `<button class="btn btn-primary" id="btnS">Kirim Jawaban</button>`);
+
+  m.querySelector("#btnS").onclick = () => {
+    const ans = m.querySelector("#ans").value.trim();
+    if (!ans) { toast("Jawaban tidak boleh kosong!", "error"); return; }
+    t.submissions = t.submissions || [];
+    const idx = t.submissions.findIndex(sb => sb.studentId === s.id);
+    const payload = { studentId: s.id, answer: ans, date: new Date().toISOString().slice(0, 16).replace('T', ' ') };
+    if (idx >= 0) t.submissions[idx] = payload; else t.submissions.push(payload);
+    saveDB(); m.remove(); render(); toast("Jawaban tugas berhasil dikirim!", "success");
+  };
+}
+
+function studentAssessmentsView() {
+  const s = currentStudent();
+  const ass = db.assessments.filter(a => a.studentId === s.id);
+  return `
+    <div class="page-head"><h2>📈 Rekapitulasi Nilai Asesmen</h2></div>
+    <div class="section">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Mata Pelajaran</th><th>Jenis Asesmen</th><th>Nilai</th><th>Catatan Guru</th></tr></thead>
+          <tbody>
+            ${ass.map(a => `<tr><td>${esc(a.subject)}</td><td>${esc(a.type)}</td><td><b>${a.score}</b></td><td>${esc(a.note)}</td></tr>`).join('') || '<tr><td colspan="4"><div class="empty-state">Belum ada rekapitulasi nilai.</div></td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function studentProgressView() {
+  const s = currentStudent();
+  return `
+    <div class="page-head"><h2>🎯 Perkembangan & Re-Asesmen</h2></div>
+    <div class="section">
+      <h3>Hasil Pengukuran Re-Asesmen</h3>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Mata Pelajaran</th><th>Nilai Awal</th><th>Nilai Re-Asesmen</th><th>Peningkatan</th><th>Catatan</th></tr></thead>
+          <tbody>
+            ${db.reassessments.filter(r => r.studentId === s.id).map(r => `<tr><td>${esc(r.subject)}</td><td>${r.initialScore}</td><td><b>${r.score}</b></td><td><b style="color:var(--emerald)">+${r.score - r.initialScore} Pt</b></td><td>${esc(r.note)}</td></tr>`).join('') || '<tr><td colspan="5"><div class="empty-state">Belum ada catatan re-asesmen.</div></td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+if (role) {
+  document.getElementById("portalChooser").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("portalBadge").textContent = role.toUpperCase();
+  showApp(); render();
+}
+</script>
+</body>
+</html>
